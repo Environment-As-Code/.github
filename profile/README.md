@@ -4,7 +4,7 @@ Configuración automatizada de mi entorno de desarrollo (Linux/WSL + Windows).
 
 ---
 
-## �️ Arquitectura
+## Arquitectura
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -41,7 +41,7 @@ Configuración automatizada de mi entorno de desarrollo (Linux/WSL + Windows).
 
 ---
 
-## �🎯 Quick Start (3 pasos)
+## 🎯 Quick Start (3 pasos)
 
 ### 1️⃣ Pre-Formateo: Preparar Windows
 
