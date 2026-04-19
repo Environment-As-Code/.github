@@ -114,8 +114,8 @@ code --version
 
 ## 🗂️ Repositorios
 
-- **[dev-setup](https://github.com/marcomiler/dev-setup)** — Automatización con Ansible
-- **[dotfiles](https://github.com/marcomiler/dotfiles)** — Configuraciones personales
+- **[dev-setup](https://github.com/Environment-As-Code/dev-setup)** — Automatización con Ansible
+- **[dotfiles](https://github.com/Environment-As-Code/dotfiles)** — Configuraciones personales
 
 ---
 
