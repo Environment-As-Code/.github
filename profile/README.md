@@ -1,6 +1,6 @@
 # marcomiler — Dev Environment Setup
 
-Configuración automatizada de mi entorno de desarrollo (Linux/WSL + Windows).
+Automatizacion de entorno de desarrollo con Ansible para Linux/WSL y Windows.
 
 ---
 
@@ -41,180 +41,76 @@ Configuración automatizada de mi entorno de desarrollo (Linux/WSL + Windows).
 
 ---
 
-## 🎯 Quick Start (3 pasos)
-
-### 1️⃣ Pre-Formateo: Preparar Windows
-
-```powershell
-# En PowerShell como Administrador:
-wsl --install
-
-# Reinicia tu PC y espera a que WSL se configure
-```
-
-### 2️⃣ Post-Formateo: Ejecutar Bootstrap
+## Quick start
 
 ```bash
-# En WSL (recién formateado):
 sudo apt update && sudo apt install -y git
 git clone https://github.com/Environment-As-Code/dev-setup.git ~/.dev-setup
 cd ~/.dev-setup
 ./bootstrap.sh
 ```
 
-**¿Qué hace `bootstrap.sh` automáticamente?**
-- ✅ Instala Ansible (no necesitas hacerlo manualmente)
-- ✅ Instala Python + dependencias
-- ✅ Ejecuta todos los playbooks
-- ✅ Configura Linux/WSL + Windows
+---
 
-### 3️⃣ Post-Bootstrap: Finalizar
+## Configuracion basica
+
+Revisa los valores en [group_vars/all.yml](group_vars/all.yml):
+
+```yaml
+linux_user: "{{ ansible_facts['user_id'] }}"
+dotfiles_repo: "git@github.com:Environment-As-Code/dotfiles.git"
+node_lts_version: "lts/krypton"    # Node 24 LTS
+```
+
+---
+
+## SSH (dotfiles privados)
 
 ```bash
-# Refresca terminal (carga Zsh y fnm)
-exec zsh
+ssh-keygen -t ed25519 -C "tu_email@dominio.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
 
-# Autenticar GitHub CLI
-gh auth login
-# → Selecciona SSH
-# → Autoriza en navegador
+Agrega la clave en GitHub y prueba:
 
-# Verifica instalación
+```bash
+ssh -T git@github.com
+```
+
+---
+
+## Ejecutar playbooks
+
+```bash
+ansible-playbook linux.yml --ask-become-pass
+ansible-playbook windows.yml
+ansible-playbook site.yml --ask-become-pass
+```
+
+---
+
+## Verificacion rapida
+
+```bash
 git --version
 node --version
 docker --version
+gh --version
 code --version
 ```
 
 ---
 
-## 📋 Checklist PRE-Bootstrap
+## Notas
 
-- [ ] Windows 11 instalado
-- [ ] WSL2 habilitado: `wsl --list --verbose` → versión 2
-- [ ] Ubuntu 24.04 instalada en WSL
-- [ ] Acceso a GitHub y SSH keys configuradas
+- Si ves el warning de "world writable", ejecuta: `chmod o-w ~/.dev-setup`.
+- Si la terminal muestra simbolos raros, instala una Nerd Font (ej: FiraCode Nerd Font) en Windows Terminal o VS Code.
 
 ---
 
-## 📋 Checklist POST-Bootstrap
+## Repositorios
 
-```bash
-# Verifica que todo está correcto:
-[ ] git --version           # ≥ 2.40
-[ ] node --version          # v24+ (LTS)
-[ ] npm --version           # ≥ 10
-[ ] docker --version        # ≥ 24
-[ ] zsh --version           # ≥ 5.9
-[ ] gh --version            # ≥ 2.0
-[ ] code --version          # ≥ 1.90
-```
-
----
-
-## 🗂️ Repositorios
-
-- **[dev-setup](https://github.com/Environment-As-Code/dev-setup)** — Automatización con Ansible
-- **[dotfiles](https://github.com/Environment-As-Code/dotfiles)** — Configuraciones personales
-
----
-
-## 🚀 Qué Se Instala
-
-### Linux/WSL
-- **Sistema:** git, curl, wget, build-essential, zsh, tmux, Docker Engine
-- **CLI tools:** bat, ripgrep, fd, fzf, exa, jq, tree, httpie, GitHub CLI
-- **Node:** fnm + Node.js LTS (v24 Krypton)
-- **Shell:** Zsh + Oh My Zsh + Powerlevel10k + plugins
-- **Editor:** VS Code + extensiones
-
-### Windows
-- **Apps:** Brave, Firefox, Windows Terminal, VS Code, Git, Discord
-- **DB Tools:** DBeaver, SQL Server Developer, SQL Server Management Studio
-- **Utilities:** 7zip, Postman, ShareX, PowerToys, Teams, Zoom
-- **VS Code:** Extensiones (Remote WSL, GitLens, Prettier, ESLint, etc.)
-
-### Configuración
-- **.gitconfig:** Usuario, email, aliases globales
-- **.gitignore_global:** Reglas compartidas para todos los repos
-- **.zshrc:** Aliases, plugins, integraciones
-- **starship.toml:** Prompt moderno y personalizado
-
----
-
-## ⚡ Información Técnica
-
-### Arquitectura
-- **bootstrap.sh:** Punto de entrada único
-- **Ansible playbooks:** `linux.yml`, `windows.yml`, `site.yml`
-- **Roles modulares:** base, shell, node, dotfiles, windows
-- **Variables:** `group_vars/all.yml`
-
-### Características
-- ✅ **Idempotencia:** Ejecuta múltiples veces sin romper nada
-- ✅ **Modular:** Agrega/quita roles según necesites
-- ✅ **Versionado:** Todo en Git
-- ✅ **Reutilizable:** Funciona en cualquier PC nueva
-
-### Extensibilidad
-
-#### Agregar Python:
-```bash
-cd ~/.dev-setup
-vim linux.yml
-# Descomenta: # - python
-ansible-playbook linux.yml --ask-become-pass
-```
-
-#### Agregar Java o .NET:
-```bash
-# Lo mismo: descomenta en linux.yml y re-ejecuta
-```
-
----
-
-## 🔧 Troubleshooting
-
-### WSL2 no está activo
-```powershell
-# En PowerShell como Admin:
-wsl --set-default-version 2
-wsl --install -d Ubuntu-24.04
-```
-
-### Terminal no carga Zsh
-```bash
-exec zsh
-# O abre nueva terminal
-```
-
-### dotfiles no se clonan
-```bash
-# Verifica que el repo es privado y tienes SSH key:
-ssh -T git@github.com
-# Debería responder: "Hi marcomiler!"
-```
-
-### Volver a ejecutar bootstrap
-```bash
-cd ~/.dev-setup
-ansible-playbook linux.yml --ask-become-pass
-# Es seguro, Ansible es idiopotente
-```
-
----
-
-## 📚 Documentación Adicional
-
-- **dev-setup README:** Estructura del proyecto, roles disponibles
-- **dotfiles README:** Configuración de archivos, personalizaciones
-
----
-
-## 🔐 Privacidad
-
-Los repositorios `dev-setup` y `dotfiles` son **privados**. Este README es público para facilitar discovery.
-
----
-
-**Última actualización:** Abril 2026
+- dev-setup: https://github.com/Environment-As-Code/dev-setup
+- dotfiles: https://github.com/Environment-As-Code/dotfiles
