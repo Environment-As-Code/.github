@@ -47,7 +47,7 @@ Configuración automatizada de mi entorno de desarrollo (Linux/WSL + Windows).
 
 ```powershell
 # En PowerShell como Administrador:
-wsl --install -d Ubuntu-24.04
+wsl --install
 
 # Reinicia tu PC y espera a que WSL se configure
 ```
@@ -57,7 +57,7 @@ wsl --install -d Ubuntu-24.04
 ```bash
 # En WSL (recién formateado):
 sudo apt update && sudo apt install -y git
-git clone https://github.com/marcomiler/dev-setup.git ~/.dev-setup
+git clone https://github.com/Environment-As-Code/dev-setup.git ~/.dev-setup
 cd ~/.dev-setup
 ./bootstrap.sh
 ```
